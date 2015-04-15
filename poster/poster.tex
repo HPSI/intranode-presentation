@@ -52,8 +52,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Multicol Settings
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\setlength{\columnsep}{0.7em}
-\setlength{\columnseprule}{0mm}
+\setlength{\columnsep}{1.9em}
+\setlength{\columnseprule}{0.0mm}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -136,7 +136,7 @@
   headershade=shade-tb,
   headerfont=\Large\textsf, %Sans Serif
   boxshade=plain,
-  textfont={ },
+  textfont={\sf },
   background=shade-tb,
   %background=plain,
   linewidth=2pt,
@@ -160,17 +160,17 @@
    }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \headerbox{Motivation}{name=motivation,column=0,row=0, span=1}{
+%  \headerbox{Motivation}{name=motivation,column=0,row=0, span=1}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Intra-node communication suffers from severe overheads mostly due to:
-\begin{itemize}
-\item inefficient data paths
-\item packet handling
-\end{itemize}
-}
+%Intra-node communication suffers from severe overheads mostly due to:
+%\begin{itemize}
+%\item inefficient data paths
+%\item packet handling
+%\end{itemize}
+%}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \headerbox{I/O Path in a Generic Xen environment}{name=xenpath,row=0,column=0, span=4}{
+ \headerbox{I/O Path in a Generic Xen environment}{name=xenpath,row=0,column=0, span=3}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{multicols}{2}
 
@@ -200,7 +200,7 @@ $\Rightarrow$ \emph{Network/Link layer}: the hypervisor, providing encapsulation
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \headerbox{Contribution}{name=contribution,column=0, below=xenpath}{
+  \headerbox{Contribution}{name=contribution,column=3,span=1}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 $\Rightarrow$ V4VSockets\footnote{https://github.com/HPSI/v4v}, an efficient, socket-compliant, high--performance intra-node communication framework.
 
@@ -213,7 +213,7 @@ $\Rightarrow$ V4VSockets preliminary evaluation, using generic micro-benchmarks 
 generic method of intra-node communication and scales efficiently with a large
 number of VMs both in terms of throughput as well as latency.
 
-$\Rightarrow$ ra eal-life use case: we deploy an HPC application
+$\Rightarrow$ real-life use case: we deploy an HPC application
 stencil over rCUDA, a remote GPU execution stack over V4VSockets.
 
 \vspace{1em}
@@ -230,60 +230,61 @@ stencil over rCUDA, a remote GPU execution stack over V4VSockets.
 %%  }
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \headerbox{Preliminary results}{name=results,column=1,span=3,below=xenpath}{
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\setlength{\columnseprule}{1pt}
-%\setlength{\columnsep}{13pt}
+ \headerbox{Preliminary results}{name=results,column=0,span=3,below=xenpath}{
+
 \begin{multicols}{2}
-\hspace{0.5em}\scalebox{.990}{
+\hspace{0.5em}\scalebox{.900}{
 \includegraphics[width=\linewidth]{figures/v4v_lat.eps}}
+
+\hspace{0.5em}\scalebox{.900}{
+\includegraphics[width=\linewidth]{figures/v4v_bw.eps}}
+
 
 V4VSockets improves the latency for small messages by 81\% compared to the
 generic case. 
-%}
 
+%\begin{multicols}{2}
 
-% \headerbox{Preliminary results (throughput)}{name=results2,column=2,below=v4vpath}{
-%\begin{multicols}{2}
-\hspace{0.5em}\scalebox{.990}{
-\includegraphics[width=\linewidth]{figures/v4v_bw.eps}}
-%\begin{multicols}{2}
 V4VSockets outperforms the default case for communication. V4VSockets is able
 to achieve 2299 MB/s, 4.5x better than the split driver, which performs poorly
 at 501 MB/s for 1 MB messages.
-%\end{multicols}
-%\begin{itemize}
-%\item no page sharing
-%\item no ethernet fragmentation
-%\item No driver domain, no scheduling implications.
-%\end{itemize}
-%
+
+The aggregate throughput achieved by V4VSockets is shown below -- we are able to reach more than half of the system's memory bandwidth%\footnote {We
+%performed a stream microbenchmark and measured 27 GB/s as the maximum memory
+%bandwidth.}, 
+bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
+\hspace{0.5em}\scalebox{.990}{
+\includegraphics[width=\linewidth]{figures/new_stream_bw_scale.eps}}
+
+
 \end{multicols}
 
 }
 
- \headerbox{GPU use case}{name=gpu,column=1,span=3,above=bottom}{
-\begin{multicols}{2} 
+\headerbox{Total execution time of a generic GPU stencil and cudamemcpy throughput}{name=gpu,column=0,span=4,above=bottom}{
+\begin{multicols}{3} 
 
-%\hspace{0.5em}\scalebox{.990}{
-%}
+\hspace{0.5em}\scalebox{.990}{
+\includegraphics[width=\linewidth]{figures/total_cublas_time.eps}
+}
+
+\hspace{0.5em}\scalebox{.990}{
+\includegraphics[width=\linewidth]{figures/matrixA_cublas_throughput.eps}
+}
 This experiment includes the following procedure: two copies of the input
 matrices from node's main memory to GPU device memory, the product execution on
-the GPU and finally one copy of the output matrix back to main memory. % The
-\includegraphics[width=\linewidth]{figures/total_cublas_time.eps}
-%normalized total time of execution of the matrix-matrix product benchmark is
+the GPU and finally one copy of the output matrix back to main memory. We plot the
+normalized time of execution of the matrix-matrix product benchmark. 
+%is
 %depicted in the Figure on the left.
 %\begin{multicols}{2}
 %\hspace{0.5em}\scalebox{.990}{
 %\includegraphics[width=\linewidth]{figures/total_cublas_time.eps}}
 
-\hspace{0.5em}\scalebox{.990}{
-\includegraphics[width=\linewidth]{figures/matrixA_cublas_throughput.eps}
-}
 
 To elaborate more on the impact of V4VSockets to the improvement in the
 execution time, we plot the throughput achieved when copying one of the input
-matrices from the machine's main memory to the GPU device memory (essentially
+matrices from the machine's main memory to the GPU device memory. (essentially
 this is a \texttt{cudamemcpy()} call).
 \end{multicols}
 
