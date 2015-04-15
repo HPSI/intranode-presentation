@@ -139,7 +139,8 @@
   textfont={ },
   background=shade-tb,
   %background=plain,
-  linewidth=2pt
+  linewidth=2pt,
+  columns=4
   }
   {
     \makebox[15em][l]{%
@@ -169,43 +170,50 @@ Intra-node communication suffers from severe overheads mostly due to:
 \end{itemize}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \headerbox{I/O Path in a Generic Xen environment vs. V4VSockets I/O path}{name=network path,row=0,column=0,span=3}{
+ \headerbox{I/O Path in a Generic Xen environment}{name=xenpath,row=0,column=0, span=4}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{multicols}{2}
 
 %\hspace{0.5em}
 \includegraphics[width=\linewidth]{figures/netfront_netback.eps}
-%Intra-node communication suffers from severe overheads mostly due to:
-%\begin{itemize}
-%\item inefficient data paths
-%\item driver domain intervention in packet forwarding / handling
-%\item driver domain intervention in packet forwarding / handling
-%\item driver domain intervention in packet forwarding / handling
-%\end{itemize}
+Intra-node communication suffers from severe overheads mostly due to:
+
+$\Rightarrow$ inefficient data paths
+
+$\Rightarrow$ driver domain intervention in packet forwarding / handling
+
 \hspace{0.5em}\scalebox{.96}{
 \includegraphics[width=\linewidth]{figures/v4vsockets.eps}
+}
 %\includegraphics[width=.5\linewidth]{}
-  }
+V4VSockets is built as a full-stack protocol framework that supports
+peer-to-peer communication between co-located VMs. %We bypass the intermediate
+%layer and use the hypervisor as the control \emph{and} the data plane. 
+
+$\Rightarrow$ \emph{Application layer}: the socket interface.
+
+$\Rightarrow$ \emph{Transport layer}: VM kernel driver.
+
+$\Rightarrow$ \emph{Network/Link layer}: the hypervisor, providing encapsulation of upper-layer messages to packets and packet delivery.
+
 \end{multicols}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \headerbox{Contribution}{name=contribution,column=0, below=network path}{
+  \headerbox{Contribution}{name=contribution,column=0, below=xenpath}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-$\Rightarrow$ We introduce V4VSockets, an efficient, socket-compliant,
-high--performance intra-node communication framework.
+$\Rightarrow$ V4VSockets\footnote{https://github.com/HPSI/v4v}, an efficient, socket-compliant, high--performance intra-node communication framework.
 
-$\Rightarrow$ efficient data path. Data are copied from~/~to the VM kernel memory
+$\Rightarrow$ optimized data path. Data are copied from~/~to the VM kernel memory
 without the need to share pages between VMs.
 
 $\Rightarrow$ no intermediary VM (driver domain), so no scheduling implications are involved. 
 
-$\Rightarrow$ We evaluate V4VSockets using generic micro-benchmarks and compare
-it to conventional communication paths. We find that V4VSockets outperforms the
+$\Rightarrow$ V4VSockets preliminary evaluation, using generic micro-benchmarks and compare it to conventional communication paths. V4VSockets outperforms the
 generic method of intra-node communication and scales efficiently with a large
 number of VMs both in terms of throughput as well as latency.
 
-$\Rightarrow$ We present a real-life use case: we deploy an HPC application
+$\Rightarrow$ ra eal-life use case: we deploy an HPC application
 stencil over rCUDA, a remote GPU execution stack over V4VSockets.
 
 \vspace{1em}
@@ -222,20 +230,20 @@ stencil over rCUDA, a remote GPU execution stack over V4VSockets.
 %%  }
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \headerbox{Preliminary results}{name=results,column=1,below=network path}{
+ \headerbox{Preliminary results}{name=results,column=1,span=3,below=xenpath}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\setlength{\columnseprule}{1pt}
 %\setlength{\columnsep}{13pt}
-%\begin{multicols}{2}
+\begin{multicols}{2}
 \hspace{0.5em}\scalebox{.990}{
 \includegraphics[width=\linewidth]{figures/v4v_lat.eps}}
 
 V4VSockets improves the latency for small messages by 81\% compared to the
 generic case. 
-}
+%}
 
 
- \headerbox{Preliminary results (throughput)}{name=results2,column=2,below=network path}{
+% \headerbox{Preliminary results (throughput)}{name=results2,column=2,below=v4vpath}{
 %\begin{multicols}{2}
 \hspace{0.5em}\scalebox{.990}{
 \includegraphics[width=\linewidth]{figures/v4v_bw.eps}}
@@ -250,11 +258,11 @@ at 501 MB/s for 1 MB messages.
 %\item No driver domain, no scheduling implications.
 %\end{itemize}
 %
-%\end{multicols}
+\end{multicols}
 
 }
 
- \headerbox{GPU use case}{name=gpu,column=0,span=2,above=bottom}{
+ \headerbox{GPU use case}{name=gpu,column=1,span=3,above=bottom}{
 \begin{multicols}{2} 
 
 %\hspace{0.5em}\scalebox{.990}{
@@ -287,51 +295,6 @@ this is a \texttt{cudamemcpy()} call).
 
 \vspace{1em}
 }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  \headerbox{Open Challenges}{name=questions,column=0,span=1,below=contribution}{
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%    
-%\textit{Higher-level parallel frameworks}: Our protocol implements simple RDMA semantics
-%(READ, WRITE). We are in the process of extending its capabilities to support
-%higher-level frameworks for application parallelism such as MPI or MapReduce.
-%
-%\textit{Performance}: Efficient I/O device sharing and support in Virtualized
-%environments does not appear to be sufficiently mature. Even in full
-%virtualization setups, many I/O devices have to be exported as emulated devices
-%to VMs. %In this work, we observe suboptimal performance when transferring data
-%%from VMs to network using common generic approaches (such as TCP/IP over 10GbE
-%%adapters), while at the same time CPU cores were busy multiplexing accesses to
-%%the hardware. 
-%%In order to be able to deploy HPC applications in VM
-%%environments, we have to take into account overheads imposed by Virtualization
-%%layers and eliminate them. 
-%
-%\textit{Hardware Offloading}: Our prototype implementation consists of a frontend and a
-%backend in the Xen virtualization platform. We show that while in the frontend
-%part (VM) CPU time is negligible and agnostic to varying message sizes, there
-%is still some CPU time spent in the Driver domain that can potentially reduce
-%the performance of the entire system. This issue could be resolved by
-%offloading this thin protocol layer to a hardware device, capable of performing
-%DMA transfers and simple protocol processing. 
-%%In addition to that, using SR-IOV
-%%techniques with this custom device can lead to a VM-capable, high-performance
-%%interconnection architecture over 10G Ethernet, comparable to VIA
-%%Myrinet/Infiniband for virtualized environments. %To this end, we are in the
-%%process of evaluating our approach in a custom, programmable controller
-%%equipped with a 10GbE interface. We aspire to alleviate all CPU overheads
-%%associated with protocol processing and propose optimizations that can achieve
-%%near-native performance.
-%
-%\textit{Decoupling HPC from the Privileged Guest}: While a hardware approach, as
-%mentioned above, could resolve CPU time issues, 
-%we would like to examine the
-%possibility of decoupling all HPC network-related issues to a different domain.
-%This way, overheads associated with world switches and interrupt handling can
-%be alleviated. We plan on evaluating this idea based on Xen stub domains, using
-%modular networking components that can be easily implemented and optimized.
-%   
-%  }
 
 \end{poster}
 
