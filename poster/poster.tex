@@ -110,7 +110,7 @@
   % Show grid to help with alignment
   grid=no,
   % Column spacing
-  colspacing=1.4em,
+  colspacing=1.0em,
   % Color style
 %  bgColorOne=white,
 %  bgColorOne=darksalmon,
@@ -247,14 +247,17 @@ $\Rightarrow$ ultra low latency and high-bandwidth.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  \headerbox{Ping-pong benchmark (single pair of VMs and up to 16 VMs)}{name=results,column=1,span=3,below=xenpath}{
 
+%\setlength{\columnsep}{0em}
+%\setlength{\columnseprule}{0.9mm}
 \begin{multicols}{2}
+
 \hspace{0.5em}\scalebox{.800}{
 \includegraphics[width=\linewidth]{figures/v4v_lat.eps}}
 
 \hspace{0.5em}\scalebox{.800}{
 \includegraphics[width=\linewidth]{figures/v4v_bw.eps}}
 
-\hspace{0.5em}\scalebox{.900}{
+\hspace{0.5em}\scalebox{.800}{
 \includegraphics[width=\linewidth]{figures/new_stream_bw_scale.eps}}
 
 
@@ -279,27 +282,25 @@ bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
 \headerbox{GPU stencil performance through rCUDA}{name=gpu,column=0,span=4,below=results}{
 \begin{multicols}{3} 
 
-\hspace{0.5em}\scalebox{.990}{
+%\hspace{0.5em}
+%\scalebox{1.095}{
 \includegraphics[width=\linewidth]{figures/total_cublas_time.eps}
-}
+%}
 
-\hspace{0.5em}\scalebox{.990}{
-\includegraphics[width=\linewidth]{figures/matrixA_cublas_throughput.eps}
-}
-
+\vspace{0.5em}
+\vspace{0.5em}
 This experiment includes the following procedure: two copies of the input
 matrices from node's main memory to GPU device memory, the product execution on
 the GPU and finally one copy of the output matrix back to main memory. %We plot the
 %normalized time of execution of the matrix-matrix product benchmark. 
-%is
-%depicted in the Figure on the left.
-%\begin{multicols}{2}
-%\hspace{0.5em}\scalebox{.990}{
-%\includegraphics[width=\linewidth]{figures/total_cublas_time.eps}}
 To elaborate more on the impact of V4VSockets to the improvement in the
 execution time, we plot the time needed to copy one of the input
 matrices from the machine's main memory to the GPU device memory. (essentially
 this is a \texttt{cudamemcpy()} call).
+\vspace{0.5em}
+%\scalebox{090}{
+\includegraphics[width=\linewidth]{figures/matrixA_cublas_throughput.eps}
+%}
 \end{multicols}
 
 %We observe that the peak throughput is 3.79 GB/s in our baseline experiment,
@@ -312,8 +313,7 @@ this is a \texttt{cudamemcpy()} call).
 }
 \headerbox{Acknowledgments}{name=acks,column=0,span=4,above=bottom}{
 The authors would like to thank the members of CSLab for the stimulating
-conversations that lead to this work, especially Dr George Goumas, Dr
-Konstantinos Nikas and Nikela Papadopoulou. Additionally, many thanks to the
+conversations that led to this work, especially Dr~George Goumas, Dr~Konstantinos Nikas and Nikela Papadopoulou. Additionally, many thanks to the
 anonymous reviewers for their useful comments and suggestions.
 \vspace{1em}
 }
