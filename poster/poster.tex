@@ -248,10 +248,10 @@ $\Rightarrow$ ultra low latency and high-bandwidth.
  \headerbox{Ping-pong benchmark (single pair of VMs and up to 16 VMs)}{name=results,column=1,span=3,below=xenpath}{
 
 \begin{multicols}{2}
-\hspace{0.5em}\scalebox{.900}{
+\hspace{0.5em}\scalebox{.800}{
 \includegraphics[width=\linewidth]{figures/v4v_lat.eps}}
 
-\hspace{0.5em}\scalebox{.900}{
+\hspace{0.5em}\scalebox{.800}{
 \includegraphics[width=\linewidth]{figures/v4v_bw.eps}}
 
 \hspace{0.5em}\scalebox{.900}{
@@ -276,7 +276,7 @@ bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
 
 }
 
-\headerbox{GPU stencil performance through rCUDA}{name=gpu,column=0,span=4,above=bottom}{
+\headerbox{GPU stencil performance through rCUDA}{name=gpu,column=0,span=4,below=results}{
 \begin{multicols}{3} 
 
 \hspace{0.5em}\scalebox{.990}{
@@ -308,6 +308,13 @@ this is a \texttt{cudamemcpy()} call).
 %V4VSockets outperforms the generic case by a factor of 7 (0.35 GB/s).
 %\end{multicols}
 
+\vspace{1em}
+}
+\headerbox{Acknowledgments}{name=acks,column=0,span=4,above=bottom}{
+The authors would like to thank the members of CSLab for the stimulating
+conversations that lead to this work, especially Dr George Goumas, Dr
+Konstantinos Nikas and Nikela Papadopoulou. Additionally, many thanks to the
+anonymous reviewers for their useful comments and suggestions.
 \vspace{1em}
 }
 
