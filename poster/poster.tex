@@ -126,8 +126,8 @@
   boxColorOne=white,
   boxColorTwo=lightercoral,
   % Format of textbox
-  %textborder=roundedleft,
-  textborder=rectangle,
+  textborder=roundedleft,
+  %textborder=rectangle,
   % Format of text header
   eyecatcher=yes,
   headerborder=open,
@@ -170,51 +170,66 @@
 %\end{itemize}
 %}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \headerbox{I/O Path in a Generic Xen environment}{name=xenpath,row=0,column=0, span=3}{
+ \headerbox{I/O Path in a Generic Xen environment}{name=xenpath,row=0,column=0, span=4}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{multicols}{2}
 
 %\hspace{0.5em}
+%\begin{figure}
 \includegraphics[width=\linewidth]{figures/netfront_netback.eps}
-Intra-node communication suffers from severe overheads mostly due to:
-
+%\end{figure}
+Intra-node communication suffers from severe overheads:
+\begin{multicols}{2}
+\setlength{\columnsep}{0.9em}
+\setlength{\columnseprule}{0.0mm}
 $\Rightarrow$ inefficient data paths
 
-$\Rightarrow$ driver domain intervention in packet forwarding / handling
+$\Rightarrow$ driver domain handles packet forwarding
 
-\hspace{0.5em}\scalebox{.96}{
-\includegraphics[width=\linewidth]{figures/v4vsockets.eps}
-}
-%\includegraphics[width=.5\linewidth]{}
 V4VSockets is built as a full-stack protocol framework that supports
-peer-to-peer communication between co-located VMs. %We bypass the intermediate
+p2p communication between VMs. %We bypass the intermediate
+\end{multicols}
+
+
+%\hspace{0.5em}\scalebox{.96}{
+\includegraphics[width=\linewidth]{figures/v4vsockets.eps}
+%}
+%\includegraphics[width=.5\linewidth]{}
 %layer and use the hypervisor as the control \emph{and} the data plane. 
 
 $\Rightarrow$ \emph{Application layer}: the socket interface.
 
 $\Rightarrow$ \emph{Transport layer}: VM kernel driver.
 
-$\Rightarrow$ \emph{Network/Link layer}: the hypervisor, providing encapsulation of upper-layer messages to packets and packet delivery.
+$\Rightarrow$ \emph{Network/Link layer}: the hypervisor, providing encapsulation of upper-layer messages to V4V messages, and packet delivery.
 
 \end{multicols}
+\vspace{.5em}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \headerbox{Contribution}{name=contribution,column=3,span=1}{
+  \headerbox{Key features}{name=contribution,column=0,span=1, below=xenpath}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-$\Rightarrow$ V4VSockets\footnote{https://github.com/HPSI/v4v}, an efficient, socket-compliant, high--performance intra-node communication framework.
+V4VSockets\footnote{https://github.com/HPSI/v4v}, is an efficient,
+socket-compliant, high performance intra node communication framework.
 
+V4VSockets features:
+\begin{flushleft}
 $\Rightarrow$ optimized data path. Data are copied from~/~to the VM kernel memory
 without the need to share pages between VMs.
 
 $\Rightarrow$ no intermediary VM (driver domain), so no scheduling implications are involved. 
 
-$\Rightarrow$ V4VSockets preliminary evaluation, using generic micro-benchmarks and compare it to conventional communication paths. V4VSockets outperforms the
-generic method of intra-node communication and scales efficiently with a large
-number of VMs both in terms of throughput as well as latency.
+$\Rightarrow$ no security implications, data cross the hypervisor and either get dropped or pushed forward through V4V semantics. %handled through the hypervisorintermediary VM (driver domain), so no scheduling implications are involved. 
 
-$\Rightarrow$ real-life use case: we deploy an HPC application
-stencil over rCUDA, a remote GPU execution stack over V4VSockets.
+$\Rightarrow$ ultra low latency and high-bandwidth.
+%$\Rightarrow$ V4VSockets preliminary evaluation, using generic micro-benchmarks versus conventional communication paths. V4VSockets outperforms the
+%generic method of intra-node communication and scales efficiently with a large
+%number of VMs both in terms of throughput as well as latency.
+
+%$\Rightarrow$ real-life use case: we deploy an HPC application
+%stencil over rCUDA, a remote GPU execution stack over V4VSockets.
+\end{flushleft}
 
 \vspace{1em}
 }
@@ -230,7 +245,7 @@ stencil over rCUDA, a remote GPU execution stack over V4VSockets.
 %%  }
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \headerbox{Preliminary results}{name=results,column=0,span=3,below=xenpath}{
+ \headerbox{Ping-pong benchmark (single pair of VMs and up to 16 VMs)}{name=results,column=1,span=3,below=xenpath}{
 
 \begin{multicols}{2}
 \hspace{0.5em}\scalebox{.900}{
@@ -238,6 +253,9 @@ stencil over rCUDA, a remote GPU execution stack over V4VSockets.
 
 \hspace{0.5em}\scalebox{.900}{
 \includegraphics[width=\linewidth]{figures/v4v_bw.eps}}
+
+\hspace{0.5em}\scalebox{.900}{
+\includegraphics[width=\linewidth]{figures/new_stream_bw_scale.eps}}
 
 
 V4VSockets improves the latency for small messages by 81\% compared to the
@@ -253,15 +271,12 @@ The aggregate throughput achieved by V4VSockets is shown below -- we are able to
 %performed a stream microbenchmark and measured 27 GB/s as the maximum memory
 %bandwidth.}, 
 bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
-\hspace{0.5em}\scalebox{.990}{
-\includegraphics[width=\linewidth]{figures/new_stream_bw_scale.eps}}
-
 
 \end{multicols}
 
 }
 
-\headerbox{Total execution time of a generic GPU stencil and cudamemcpy throughput}{name=gpu,column=0,span=4,above=bottom}{
+\headerbox{GPU stencil performance through rCUDA}{name=gpu,column=0,span=4,above=bottom}{
 \begin{multicols}{3} 
 
 \hspace{0.5em}\scalebox{.990}{
@@ -271,19 +286,18 @@ bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
 \hspace{0.5em}\scalebox{.990}{
 \includegraphics[width=\linewidth]{figures/matrixA_cublas_throughput.eps}
 }
+
 This experiment includes the following procedure: two copies of the input
 matrices from node's main memory to GPU device memory, the product execution on
-the GPU and finally one copy of the output matrix back to main memory. We plot the
-normalized time of execution of the matrix-matrix product benchmark. 
+the GPU and finally one copy of the output matrix back to main memory. %We plot the
+%normalized time of execution of the matrix-matrix product benchmark. 
 %is
 %depicted in the Figure on the left.
 %\begin{multicols}{2}
 %\hspace{0.5em}\scalebox{.990}{
 %\includegraphics[width=\linewidth]{figures/total_cublas_time.eps}}
-
-
 To elaborate more on the impact of V4VSockets to the improvement in the
-execution time, we plot the throughput achieved when copying one of the input
+execution time, we plot the time needed to copy one of the input
 matrices from the machine's main memory to the GPU device memory. (essentially
 this is a \texttt{cudamemcpy()} call).
 \end{multicols}
