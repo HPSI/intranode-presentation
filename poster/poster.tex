@@ -25,6 +25,7 @@
 %\usepackage{bookman}
 \usepackage{palatino}
 
+
 \newcommand{\captionfont}{\footnotesize}
 
 \selectcolormodel{cmyk}
@@ -71,6 +72,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+
+\renewcommand{\thefootnote}{\roman{footnote}}
+\renewcommand{\thefootnote}{$^{\it \roman{footnote}}$}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Here starts the poster
@@ -170,40 +174,53 @@
 %\end{itemize}
 %}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \headerbox{I/O Path in a Generic Xen environment}{name=xenpath,row=0,column=0, span=4}{
+ \headerbox{I/O Path in Xen (generic environment)}{name=xenpath,row=0,column=0, span=2}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{multicols}{2}
+%\begin{multicols}{2}
 
 %\hspace{0.5em}
 %\begin{figure}
+\begin{center}
 \includegraphics[width=\linewidth]{figures/netfront_netback.eps}
+\end{center}
 %\end{figure}
 Intra-node communication suffers from severe overheads:
-\begin{multicols}{2}
-\setlength{\columnsep}{0.9em}
-\setlength{\columnseprule}{0.0mm}
+%\begin{multicols}{2}
+%\setlength{\columnsep}{0.3em}
+%\setlength{\columnseprule}{0.0mm}
+
 $\Rightarrow$ inefficient data paths
 
 $\Rightarrow$ driver domain handles packet forwarding
 
-V4VSockets is built as a full-stack protocol framework that supports
-p2p communication between VMs. %We bypass the intermediate
-\end{multicols}
+$\Rightarrow$ unnecessary TCP/IP stack crossing and fragmentation
 
+%\end{multicols}
+\vspace{0.5em}
 
+}
+
+\headerbox{I/O Path in Xen with V4VSockets}{name=xenpath,row=0,column=2, span=2}{
 %\hspace{0.5em}\scalebox{.96}{
-\includegraphics[width=\linewidth]{figures/v4vsockets.eps}
+\begin{center}
+\includegraphics[width=.9\linewidth]{figures/v4vsockets.eps}
+\end{center}
 %}
 %\includegraphics[width=.5\linewidth]{}
 %layer and use the hypervisor as the control \emph{and} the data plane. 
 
+V4VSockets is built as a full-stack protocol framework that supports
+p2p communication between VMs. %We bypass the intermediate
+
+%\begin{multicols}{2}
+\setlength{\columnsep}{0.3em}
 $\Rightarrow$ \emph{Application layer}: the socket interface.
 
 $\Rightarrow$ \emph{Transport layer}: VM kernel driver.
 
 $\Rightarrow$ \emph{Network/Link layer}: the hypervisor, providing encapsulation of upper-layer messages to V4V messages, and packet delivery.
 
-\end{multicols}
+%\end{multicols}
 \vspace{.5em}
 }
 
@@ -261,6 +278,8 @@ $\Rightarrow$ ultra low latency and high-bandwidth.
 \includegraphics[width=\linewidth]{figures/new_stream_bw_scale.eps}}
 
 
+\renewcommand{\thefootnote}{\roman{footnote}}
+
 V4VSockets improves the latency for small messages by 81\% compared to the
 generic case. 
 
@@ -270,10 +289,10 @@ V4VSockets outperforms the default case for communication. V4VSockets is able
 to achieve 2299 MB/s, 4.5x better than the split driver, which performs poorly
 at 501 MB/s for 1 MB messages.
 
-The aggregate throughput achieved by V4VSockets is shown below -- we are able to reach more than half of the system's memory bandwidth%\footnote {We
+The aggregate throughput achieved by V4VSockets is shown below -- we are able to reach more than half of the system's memory bandwidth (measured with stream @ 27GB/s) %\footnote[1]{We
 %performed a stream microbenchmark and measured 27 GB/s as the maximum memory
 %bandwidth.}, 
-bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
+, bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
 
 \end{multicols}
 
@@ -312,12 +331,14 @@ this is a \texttt{cudamemcpy()} call).
 \vspace{1em}
 }
 \headerbox{Acknowledgments}{name=acks,column=0,span=4,above=bottom}{
+
+
 The authors would like to thank the members of CSLab for the stimulating
-conversations that led to this work, especially Dr~George Goumas, Dr~Konstantinos Nikas and Nikela Papadopoulou. Additionally, many thanks to the
+conversations that led to this work, especially Dr~George Goumas,
+Dr~Konstantinos Nikas and Nikela Papadopoulou. Additionally, many thanks to the
 anonymous reviewers for their useful comments and suggestions.
 \vspace{1em}
 }
-
 \end{poster}
 
 \end{document}
