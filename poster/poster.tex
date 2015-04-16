@@ -15,6 +15,7 @@
 \usepackage{graphicx}
 \usepackage{scalefnt}
 \usepackage{multicol}
+\usepackage{footmisc}
 
 \usepackage{pgfbaselayers}
 \pgfdeclarelayer{background}
@@ -29,6 +30,7 @@
 
 \newcommand{\captionfont}{\footnotesize}
 
+%\renewcommand{\thefootnote}{\roman{footnote}}
 \selectcolormodel{cmyk}
 
 \graphicspath{{images/}}
@@ -62,9 +64,9 @@
 % Save space in lists. Use this after the opening of the list
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\compresslist}{%
-\setlength{\itemsep}{0.2em}%
-\setlength{\parskip}{0.2pt}%
-\setlength{\parsep}{0.2pt}%
+\setlength{\itemsep}{0.1em}%
+\setlength{\parskip}{0.0pt}%
+\setlength{\parsep}{0.0pt}%
 }
 
 
@@ -73,9 +75,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+\def\@xfootnote[#1]{%
+  \protected@xdef\@thefnmark{#1}%
+  \@footnotemark\@footnotetext}
 
-\renewcommand{\thefootnote}{\roman{footnote}}
-\renewcommand{\thefootnote}{$^{\it \roman{footnote}}$}
+%\renewcommand{\thefootnote}{\roman{footnote}}
+%\renewcommand{\thefootnote}{$^{\it \roman{footnote}}$}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Here starts the poster
@@ -128,7 +133,7 @@
   headerColorOne=lightcoral,
   headerColorOne=white,
   headerColorTwo=darksalmon,
-  headerColorTwo=lightercoral,
+  headerColorTwo=white,
   headerFontColor=black,
   boxColorOne=lightercoral,
   boxColorOne=white,
@@ -153,16 +158,16 @@
   {
     \makebox[15em][l]{%
       %\begin{minipage}{8em}
-        \includegraphics[height=.08\textwidth]{acmlogo.pdf}
+        \includegraphics[height=.085\textwidth]{acm.eps}
       %\end{minipage} 
     }
    }
   {\sc V4VSockets}
-  { \huge low overhead intra-node communication in Xen}
+  { \sc\vspace{0.5em} low overhead intra-node communication in Xen}
   {   \makebox[15em][r]{%
-      \begin{minipage}{13em}
+      \begin{minipage}{14.5em}
         %\vfill
-        \includegraphics[height=4em]{cslab_logo.pdf}
+        \includegraphics[height=4.5em]{cslab_logo.pdf}
        \end{minipage}}
     %\makebox[5em][r]{% \includegraphics[height=5.0em]{ntua_logo.pdf} }
    }
@@ -185,7 +190,7 @@
 %\hspace{0.5em}
 %\begin{figure}
 \begin{center}
-\includegraphics[width=\linewidth]{figures/netfront_netback.eps}
+\includegraphics[width=.9\linewidth]{figures/netfront_netback.eps}
 \end{center}
 %\end{figure}
 Intra-node communication suffers from severe overheads:
@@ -239,24 +244,25 @@ p2p communication between VMs. %We bypass the intermediate
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \headerbox{Key features}{name=contribution,column=0,span=2, below=xenpath}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-V4VSockets\footnote{https://github.com/HPSI/v4v}, is an efficient,
-socket-compliant, high performance intra node communication framework.
+V4VSockets is an efficient, socket-compliant, high performance intra node communication framework.
+\vspace{.5em}
 
 V4VSockets features:
 \begin{flushleft}
 \begin{itemize}
 \compresslist
-\item[$\Rightarrow$] \emph{optimized} data path (data are copied from~/~to the VM kernel memory without the need to share pages between VMs)
+\item[$\Rightarrow$] \emph{optimized data path} (data are copied from~/~to the VM kernel memory without the need to share pages between VMs)
 
-\item[$\Rightarrow$] no intermediary VM (driver domain), so no scheduling implications are involved. 
+\item[$\Rightarrow$] \emph{low-overhead} framework (no intermediary VM --
+driver domain -- no scheduling implications are involved) 
 
-\item[$\Rightarrow$] no security implications (data cross the hypervisor and either get dropped or pushed forward using V4V semantics) %handled through the hypervisorintermediary VM (driver domain), so no scheduling implications are involved. 
-
-\item[$\Rightarrow$] ultra \emph{low latency} and \emph{high bandwidth}.
+\item[$\Rightarrow$] \emph{secure} (no security implications -- data cross the hypervisor and either get dropped or pushed forward using V4V semantics)
+\item[$\Rightarrow$] \emph{ultra low latency} and \emph{high bandwidth}
+\item[$\Rightarrow$] Open-source, available @ \texttt{https://github.com/HPSI/v4v}
 \end{itemize}
 \end{flushleft}
 
-\vspace{1em}
+\vspace{.5em}
 }
 
 
@@ -270,7 +276,7 @@ V4VSockets features:
 %%  }
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \headerbox{Ping-pong benchmark}{name=results,column=2,span=2,below=v4vpath}{
+\headerbox{Ping-pong benchmark on 2x Xeon X5650, 48 GB}{name=results,column=2,span=2,below=v4vpath}{
 
 \setlength{\columnsep}{0em}
 %\setlength{\columnseprule}{0.9mm}
@@ -284,19 +290,18 @@ V4VSockets features:
 
 \end{multicols}
 \begin{center}
-\scalebox{.900}{
+\scalebox{.870}{
 \includegraphics[width=\linewidth]{figures/new_stream_bw_scale.eps}}
 \end{center}
 
-
-\renewcommand{\thefootnote}{\roman{footnote}}
-
+\vspace {-1em}
+V4VSockets:
 \begin{itemize}
 \compresslist
 \item[$\Rightarrow$] improves latency for small messages by 81\% 
 \item[$\Rightarrow$] achieves 2299 MB/s for large messages (1 MB) vs. 501 MB/s
 \item[$\Rightarrow$] scales efficiently with the number of VMs, both in terms of latency and bandwidth
-\item[$\Rightarrow$] aggregate throughput $\approx$ 17 GB/s for 512 KB messages when 16 VMs exchange data in pairs
+\item[$\Rightarrow$] achieves aggregate throughput $\approx$ 17 GB/s for 512 KB messages when 16 VMs exchange data in pairs
 \end{itemize}
 
  %bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
@@ -314,12 +319,13 @@ V4VSockets features:
 }
 \end{multicols}
 
+We run the matrix-matrix product benchmark: (a) natively via GPU passthrough, (b) via rCUDA over TCP/IP sockets and (c) via rCUDA over V4VSockets. Steps include: (i) 2x input matrix copies, (ii) GPU product compute, (iii) 1x output matrix copy back. V4VSockets:
 \begin{itemize}
 \compresslist
-\item[$\Rightarrow$] matrix-matrix product benchmark run: (a) natively via GPU passthrough, (b) rCUDA over TCP/IP sockets and (c) rCUDA over V4VSockets
-\item[$\Rightarrow$] steps: 2x matrix copy, GPU compute, 1x copy back.
-\item[$\Rightarrow$] adds minimum overhead of 15\% (compared to native execution)
-\item[$\Rightarrow$] Boosts transfer throughput by 7 (at best) compared to TCP/IP
+%\item[$\Rightarrow$] matrix-matrix product benchmark run: (a) natively via GPU passthrough, (b) rCUDA over TCP/IP sockets and (c) rCUDA over V4VSockets
+%\item[$\Rightarrow$] steps: 2x matrix copy, GPU compute, 1x copy back.
+\item[$\Rightarrow$] adds a minimum overhead of 15\% (compared to native execution)
+\item[$\Rightarrow$] boosts transfer throughput by 7x (at best) compared to TCP/IP
 \end{itemize}
 \vspace{.5em}
 
@@ -331,11 +337,15 @@ V4VSockets features:
 
 %\vspace{1em}
 }
-\headerbox{\small Contact info and Acknowledgments}{name=acks,column=2,span=2,above=bottom}{
+\headerbox{\small Contact info and Acknowledgments}{name=acks,column=2,span=2,below=results}{
 \scalefont{.85}
 \begin{center}
-Anastassios Nanos\footnote{Currently with OnApp Ltd.}, Stefanos Gerangelos, Ioanna Alifieraki\footnote{Currently with the University of Manchester} and Nectarios Koziris\\
- \{ananos,sgerag,ialif,nkoziris\}@cslab.ece.ntua.gr
+Anastassios Nanos, %\footnote{Currently with OnApp Ltd.}, 
+Stefanos Gerangelos, Ioanna Alifieraki
+%\footnote{Currently with the University of Manchester} 
+and Nectarios Koziris\\
+ \{ananos,sgerag,ialif,nkoziris\}@cslab.ece.ntua.gr\\
+\texttt{http://www.cslab.ece.ntua.gr/research}
 \end{center}
 
 %\begin{multicols}{2}
@@ -350,21 +360,21 @@ Dr~Konstantinos Nikas and Nikela Papadopoulou. Additionally, many thanks to the
 anonymous reviewers for their useful comments and suggestions.
 \end{minipage}
 %\end{multicols}
-%\vspace{1em}
+\vspace{1em}
 }
 
-\headerbox{Work in Progress}{name=wip,column=0,span=2,above=bottom}{
+\headerbox{Work in Progress}{name=wip,column=0,span=2,below=gpu}{
 %We plan to:
 \begin{itemize}
 \compresslist
-\item[$\Rightarrow$] Strengthen our implementation to a more user-friendly approach,
-\item[$\Rightarrow$] Thoroughly examine the CPU utilization overheads imposed by V4VSockets, 
+\item[$\Rightarrow$] Strengthen our implementation towards a more user-friendly approach.
+\item[$\Rightarrow$] Thoroughly examine the CPU utilization overheads imposed by V4VSockets. 
 \item[$\Rightarrow$] Polish the peer discovery framework to adaptively use V4VSockets over generic sockets. 
-\item[$\Rightarrow$] Perform an elaborate performance evaluation of the GPU sharing framework we have developed
+\item[$\Rightarrow$] Perform an elaborate performance evaluation of the GPU sharing framework we have developed.
 \end{itemize}
 
 
-\vspace{1em}
+\vspace{.5em}
 }
 \end{poster}
 
