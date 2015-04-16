@@ -53,7 +53,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Multicol Settings
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\setlength{\columnsep}{1.9em}
+\setlength{\columnsep}{1.1em}
 \setlength{\columnseprule}{0.0mm}
 
 
@@ -61,7 +61,7 @@
 % Save space in lists. Use this after the opening of the list
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\compresslist}{%
-\setlength{\itemsep}{1pt}%
+\setlength{\itemsep}{0.1em}%
 \setlength{\parskip}{0pt}%
 \setlength{\parsep}{0pt}%
 }
@@ -114,7 +114,7 @@
   % Show grid to help with alignment
   grid=no,
   % Column spacing
-  colspacing=1.0em,
+  colspacing=0.5em,
   % Color style
 %  bgColorOne=white,
 %  bgColorOne=darksalmon,
@@ -134,7 +134,7 @@
   %textborder=rectangle,
   % Format of text header
   eyecatcher=yes,
-  headerborder=open,
+  headerborder=closed,
   headerheight=0.09\textheight,
   headershape=roundedright,
   headershade=shade-tb,
@@ -143,7 +143,7 @@
   textfont={\sf },
   background=shade-tb,
   %background=plain,
-  linewidth=2pt,
+  linewidth=0pt,
   columns=4
   }
   {
@@ -189,12 +189,15 @@ Intra-node communication suffers from severe overheads:
 %\setlength{\columnsep}{0.3em}
 %\setlength{\columnseprule}{0.0mm}
 
-$\Rightarrow$ inefficient data paths
+\begin{itemize}
+\compresslist
+\item[$\Rightarrow$] inefficient data paths
 
-$\Rightarrow$ driver domain handles packet forwarding
+\item[$\Rightarrow$] driver domain handles packet forwarding
 
-$\Rightarrow$ unnecessary TCP/IP stack crossing and fragmentation
+\item[$\Rightarrow$] unnecessary TCP/IP stack crossing and fragmentation
 
+\end{itemize}
 %\end{multicols}
 \vspace{0.5em}
 
@@ -213,13 +216,16 @@ V4VSockets is built as a full-stack protocol framework that supports
 p2p communication between VMs. %We bypass the intermediate
 
 %\begin{multicols}{2}
-\setlength{\columnsep}{0.3em}
-$\Rightarrow$ \emph{Application layer}: the socket interface.
+%\setlength{\columnsep}{0.3em}
+\begin{itemize}
+\compresslist
+\item[$\Rightarrow$] \emph{Application layer}: the socket interface.
 
-$\Rightarrow$ \emph{Transport layer}: VM kernel driver.
+\item[$\Rightarrow$] \emph{Transport layer}: VM kernel driver.
 
-$\Rightarrow$ \emph{Network/Link layer}: the hypervisor, providing encapsulation of upper-layer messages to V4V messages, and packet delivery.
+\item[$\Rightarrow$] \emph{Network/Link layer}: the hypervisor, providing encapsulation of upper-layer messages to V4V messages, and packet delivery.
 
+\end{itemize}
 %\end{multicols}
 \vspace{.5em}
 }
@@ -268,14 +274,17 @@ $\Rightarrow$ ultra low latency and high-bandwidth.
 %\setlength{\columnseprule}{0.9mm}
 \begin{multicols}{2}
 
-\hspace{0.5em}\scalebox{.800}{
+\hspace{0.5em}\scalebox{.90}{
 \includegraphics[width=\linewidth]{figures/v4v_lat.eps}}
 
-\hspace{0.5em}\scalebox{.800}{
+\hspace{0.5em}\scalebox{.90}{
 \includegraphics[width=\linewidth]{figures/v4v_bw.eps}}
 
-\hspace{0.5em}\scalebox{.800}{
+\end{multicols}
+\begin{center}
+\scalebox{.800}{
 \includegraphics[width=\linewidth]{figures/new_stream_bw_scale.eps}}
+\end{center}
 
 
 \renewcommand{\thefootnote}{\roman{footnote}}
@@ -294,7 +303,7 @@ The aggregate throughput achieved by V4VSockets is shown below -- we are able to
 %bandwidth.}, 
 , bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
 
-\end{multicols}
+%\end{multicols}
 
 }
 
@@ -316,7 +325,9 @@ To elaborate more on the impact of V4VSockets to the improvement in the
 execution time, we plot the time needed to copy one of the input
 matrices from the machine's main memory to the GPU device memory. (essentially
 this is a \texttt{cudamemcpy()} call).
-\vspace{0.5em}
+\vspace{1.5em}
+
+
 %\scalebox{090}{
 \includegraphics[width=\linewidth]{figures/matrixA_cublas_throughput.eps}
 %}
@@ -330,13 +341,25 @@ this is a \texttt{cudamemcpy()} call).
 
 \vspace{1em}
 }
-\headerbox{Acknowledgments}{name=acks,column=0,span=4,above=bottom}{
-
-
+\headerbox{Acknowledgments}{name=acks,column=0,span=2,above=bottom}{
+\small
 The authors would like to thank the members of CSLab for the stimulating
 conversations that led to this work, especially Dr~George Goumas,
 Dr~Konstantinos Nikas and Nikela Papadopoulou. Additionally, many thanks to the
 anonymous reviewers for their useful comments and suggestions.
+\vspace{1em}
+}
+
+\headerbox{WiP}{name=wip,column=2,span=2,above=bottom}{
+%We plan to:
+\begin{itemize}
+\compresslist
+\item Strengthen our implementation to a more user-friendly approach,
+\item Thoroughly examine the CPU utilization overheads imposed by V4VSockets, 
+\item Polish the peer discovery framework to adaptively use V4VSockets over generic sockets. 
+\end{itemize}
+
+
 \vspace{1em}
 }
 \end{poster}
