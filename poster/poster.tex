@@ -231,7 +231,7 @@ p2p communication between VMs. %We bypass the intermediate
 \compresslist
 \item[$\Rightarrow$] \emph{Application layer}: the socket interface.
 
-\item[$\Rightarrow$] \emph{Transport layer}: VM kernel driver.
+\item[$\Rightarrow$] \emph{Transport layer}: a VM kernel driver.
 
 \item[$\Rightarrow$] \emph{Network/Link layer}: the hypervisor, providing encapsulation of upper-layer messages to V4V messages, and packet delivery.
 
@@ -244,7 +244,7 @@ p2p communication between VMs. %We bypass the intermediate
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \headerbox{Key features}{name=contribution,column=0,span=2, below=xenpath}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-V4VSockets is an efficient, socket-compliant, high performance intra node communication framework.
+V4VSockets is an efficient, socket-compliant, high performance intra node communication framework for VMs.
 \vspace{.5em}
 
 V4VSockets features:
@@ -258,7 +258,7 @@ driver domain -- no scheduling implications are involved)
 
 \item[$\Rightarrow$] \emph{secure} (no security implications -- data cross the hypervisor and either get dropped or pushed forward using V4V semantics)
 \item[$\Rightarrow$] \emph{ultra low latency} and \emph{high bandwidth}
-\item[$\Rightarrow$] Open-source, available @ \texttt{https://github.com/HPSI/v4v}
+\item[$\Rightarrow$] open-source, available @ \texttt{https://github.com/HPSI/v4v}
 \end{itemize}
 \end{flushleft}
 
@@ -276,7 +276,7 @@ driver domain -- no scheduling implications are involved)
 %%  }
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\headerbox{Ping-pong benchmark on 2x Xeon X5650, 48 GB}{name=results,column=2,span=2,below=v4vpath}{
+\headerbox{Ping-pong benchmark}{name=results,column=2,span=2,below=v4vpath}{
 
 \setlength{\columnsep}{0em}
 %\setlength{\columnseprule}{0.9mm}
@@ -295,7 +295,7 @@ driver domain -- no scheduling implications are involved)
 \end{center}
 
 \vspace {-1em}
-V4VSockets:
+We run a micro-benchmark on a 2x Xeon X5650 node, with 48 GB of RAM (@1333MHz). V4VSockets:
 \begin{itemize}
 \compresslist
 \item[$\Rightarrow$] improves latency for small messages by 81\% 
@@ -319,7 +319,7 @@ V4VSockets:
 }
 \end{multicols}
 
-We run the matrix-matrix product benchmark: (a) natively via GPU passthrough, (b) via rCUDA over TCP/IP sockets and (c) via rCUDA over V4VSockets. Steps include: (i) 2x input matrix copies, (ii) GPU product compute, (iii) 1x output matrix copy back. V4VSockets:
+We run the matrix-matrix product benchmark: (a) natively via GPU passthrough, (b) via rCUDA over TCP sockets and (c) via rCUDA over V4VSockets. Steps include: (i) 2x input matrix copies, (ii) GPU product compute, (iii) 1x output matrix copy back. V4VSockets:
 \begin{itemize}
 \compresslist
 %\item[$\Rightarrow$] matrix-matrix product benchmark run: (a) natively via GPU passthrough, (b) rCUDA over TCP/IP sockets and (c) rCUDA over V4VSockets
@@ -365,13 +365,15 @@ anonymous reviewers for their useful comments and suggestions.
 
 \headerbox{Work in Progress}{name=wip,column=0,span=2,below=gpu}{
 %We plan to:
+\begin{flushleft}
 \begin{itemize}
 \compresslist
 \item[$\Rightarrow$] Strengthen our implementation towards a more user-friendly approach.
 \item[$\Rightarrow$] Thoroughly examine the CPU utilization overheads imposed by V4VSockets. 
-\item[$\Rightarrow$] Polish the peer discovery framework to adaptively use V4VSockets over generic sockets. 
+\item[$\Rightarrow$] Polish the peer discovery framework to adaptively use V4VSockets over generic TCP sockets. 
 \item[$\Rightarrow$] Perform an elaborate performance evaluation of the GPU sharing framework we have developed.
 \end{itemize}
+\end{flushleft}
 
 
 \vspace{.5em}
