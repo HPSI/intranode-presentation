@@ -13,6 +13,7 @@
 \usepackage{bm}
 
 \usepackage{graphicx}
+\usepackage{scalefnt}
 \usepackage{multicol}
 
 \usepackage{pgfbaselayers}
@@ -61,9 +62,9 @@
 % Save space in lists. Use this after the opening of the list
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\compresslist}{%
-\setlength{\itemsep}{0.1em}%
-\setlength{\parskip}{0pt}%
-\setlength{\parsep}{0pt}%
+\setlength{\itemsep}{0.2em}%
+\setlength{\parskip}{0.2pt}%
+\setlength{\parsep}{0.2pt}%
 }
 
 
@@ -119,13 +120,16 @@
 %  bgColorOne=white,
 %  bgColorOne=darksalmon,
   bgColorOne=white,
-  bgColorTwo=darksalmon,
+  %bgColorTwo=darksalmon,
+  bgColorTwo=white,
   %bgColorThree=red,
   borderColor=red,
   %headerColorOne=white,
   headerColorOne=lightcoral,
+  headerColorOne=white,
   headerColorTwo=darksalmon,
-  headerFontColor=white,
+  headerColorTwo=lightercoral,
+  headerFontColor=black,
   boxColorOne=lightercoral,
   boxColorOne=white,
   boxColorTwo=lightercoral,
@@ -135,7 +139,7 @@
   % Format of text header
   eyecatcher=yes,
   headerborder=closed,
-  headerheight=0.09\textheight,
+  headerheight=0.08\textheight,
   headershape=roundedright,
   headershade=shade-tb,
   headerfont=\Large\textsf, %Sans Serif
@@ -143,7 +147,7 @@
   textfont={\sf },
   background=shade-tb,
   %background=plain,
-  linewidth=0pt,
+  linewidth=1pt,
   columns=4
   }
   {
@@ -153,8 +157,8 @@
       %\end{minipage} 
     }
    }
-  {V4VSockets: low overhead intra-node communication in Xen}
-  {A. Nanos, S. Gerangelos, I. Alifieraki and N. Koziris\\ \{ananos,sgerag,ialif,nkoziris\}@cslab.ece.ntua.gr}
+  {\sc V4VSockets}
+  { \huge low overhead intra-node communication in Xen}
   {   \makebox[15em][r]{%
       \begin{minipage}{13em}
         %\vfill
@@ -217,6 +221,7 @@ p2p communication between VMs. %We bypass the intermediate
 
 %\begin{multicols}{2}
 %\setlength{\columnsep}{0.3em}
+\begin{flushleft}
 \begin{itemize}
 \compresslist
 \item[$\Rightarrow$] \emph{Application layer}: the socket interface.
@@ -226,6 +231,7 @@ p2p communication between VMs. %We bypass the intermediate
 \item[$\Rightarrow$] \emph{Network/Link layer}: the hypervisor, providing encapsulation of upper-layer messages to V4V messages, and packet delivery.
 
 \end{itemize}
+\end{flushleft}
 %\end{multicols}
 \vspace{.5em}
 }
@@ -238,20 +244,16 @@ socket-compliant, high performance intra node communication framework.
 
 V4VSockets features:
 \begin{flushleft}
-$\Rightarrow$ optimized data path. Data are copied from~/~to the VM kernel memory
-without the need to share pages between VMs.
+\begin{itemize}
+\compresslist
+\item[$\Rightarrow$] \emph{optimized} data path (data are copied from~/~to the VM kernel memory without the need to share pages between VMs)
 
-$\Rightarrow$ no intermediary VM (driver domain), so no scheduling implications are involved. 
+\item[$\Rightarrow$] no intermediary VM (driver domain), so no scheduling implications are involved. 
 
-$\Rightarrow$ no security implications, data cross the hypervisor and either get dropped or pushed forward through V4V semantics. %handled through the hypervisorintermediary VM (driver domain), so no scheduling implications are involved. 
+\item[$\Rightarrow$] no security implications (data cross the hypervisor and either get dropped or pushed forward using V4V semantics) %handled through the hypervisorintermediary VM (driver domain), so no scheduling implications are involved. 
 
-$\Rightarrow$ ultra low latency and high-bandwidth.
-%$\Rightarrow$ V4VSockets preliminary evaluation, using generic micro-benchmarks versus conventional communication paths. V4VSockets outperforms the
-%generic method of intra-node communication and scales efficiently with a large
-%number of VMs both in terms of throughput as well as latency.
-
-%$\Rightarrow$ real-life use case: we deploy an HPC application
-%stencil over rCUDA, a remote GPU execution stack over V4VSockets.
+\item[$\Rightarrow$] ultra \emph{low latency} and \emph{high bandwidth}.
+\end{itemize}
 \end{flushleft}
 
 \vspace{1em}
@@ -270,38 +272,34 @@ $\Rightarrow$ ultra low latency and high-bandwidth.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  \headerbox{Ping-pong benchmark}{name=results,column=2,span=2,below=v4vpath}{
 
-%\setlength{\columnsep}{0em}
+\setlength{\columnsep}{0em}
 %\setlength{\columnseprule}{0.9mm}
 \begin{multicols}{2}
 
-\hspace{0.5em}\scalebox{.90}{
+\hspace{0.0em}\scalebox{.95}{
 \includegraphics[width=\linewidth]{figures/v4v_lat.eps}}
 
-\hspace{0.5em}\scalebox{.90}{
+\hspace{0.0em}\scalebox{.95}{
 \includegraphics[width=\linewidth]{figures/v4v_bw.eps}}
 
 \end{multicols}
 \begin{center}
-\scalebox{.800}{
+\scalebox{.900}{
 \includegraphics[width=\linewidth]{figures/new_stream_bw_scale.eps}}
 \end{center}
 
 
 \renewcommand{\thefootnote}{\roman{footnote}}
 
-V4VSockets improves the latency for small messages by 81\% compared to the
-generic case. 
+\begin{itemize}
+\compresslist
+\item[$\Rightarrow$] improves latency for small messages by 81\% 
+\item[$\Rightarrow$] achieves 2299 MB/s for large messages (1 MB) vs. 501 MB/s
+\item[$\Rightarrow$] scales efficiently with the number of VMs, both in terms of latency and bandwidth
+\item[$\Rightarrow$] aggregate throughput $\approx$ 17 GB/s for 512 KB messages when 16 VMs exchange data in pairs
+\end{itemize}
 
-%\begin{multicols}{2}
-
-V4VSockets outperforms the default case for communication. V4VSockets is able
-to achieve 2299 MB/s, 4.5x better than the split driver, which performs poorly
-at 501 MB/s for 1 MB messages.
-
-The aggregate throughput achieved by V4VSockets is shown below -- we are able to reach more than half of the system's memory bandwidth (measured with stream @ 27GB/s) %\footnote[1]{We
-%performed a stream microbenchmark and measured 27 GB/s as the maximum memory
-%bandwidth.}, 
-, bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
+ %bringing memory-copy-like bandwidth measurements to VM--to--VM message exchange.
 
 %\end{multicols}
 
@@ -310,28 +308,20 @@ The aggregate throughput achieved by V4VSockets is shown below -- we are able to
 \headerbox{GPU stencil performance through rCUDA}{name=gpu,column=0,span=2,below=contribution}{
 \begin{multicols}{2} 
 
-%\hspace{0.5em}
-%\scalebox{1.095}{
 \includegraphics[width=\linewidth]{figures/total_cublas_time.eps}
-%}
-
-\vspace{0.5em}
-\vspace{0.5em}
-This experiment includes the following procedure: two copies of the input
-matrices from node's main memory to GPU device memory, the product execution on
-the GPU and finally one copy of the output matrix back to main memory. %We plot the
-%normalized time of execution of the matrix-matrix product benchmark. 
-To elaborate more on the impact of V4VSockets to the improvement in the
-execution time, we plot the time needed to copy one of the input
-matrices from the machine's main memory to the GPU device memory. (essentially
-this is a \texttt{cudamemcpy()} call).
-\vspace{1.5em}
-
-
-%\scalebox{090}{
+\scalebox{0.89}{
 \includegraphics[width=\linewidth]{figures/matrixA_cublas_throughput.eps}
-%}
+}
 \end{multicols}
+
+\begin{itemize}
+\compresslist
+\item[$\Rightarrow$] matrix-matrix product benchmark run: (a) natively via GPU passthrough, (b) rCUDA over TCP/IP sockets and (c) rCUDA over V4VSockets
+\item[$\Rightarrow$] steps: 2x matrix copy, GPU compute, 1x copy back.
+\item[$\Rightarrow$] adds minimum overhead of 15\% (compared to native execution)
+\item[$\Rightarrow$] Boosts transfer throughput by 7 (at best) compared to TCP/IP
+\end{itemize}
+\vspace{.5em}
 
 %We observe that the peak throughput is 3.79 GB/s in our baseline experiment,
 %while the respective throughput in the remote V4VSockets case is 2.46 GB/s.
@@ -339,24 +329,38 @@ this is a \texttt{cudamemcpy()} call).
 %V4VSockets outperforms the generic case by a factor of 7 (0.35 GB/s).
 %\end{multicols}
 
-\vspace{1em}
+%\vspace{1em}
 }
-\headerbox{Acknowledgments}{name=acks,column=0,span=2,above=bottom}{
-\small
+\headerbox{\small Contact info and Acknowledgments}{name=acks,column=2,span=2,above=bottom}{
+\scalefont{.85}
+\begin{center}
+Anastassios Nanos\footnote{Currently with OnApp Ltd.}, Stefanos Gerangelos, Ioanna Alifieraki\footnote{Currently with the University of Manchester} and Nectarios Koziris\\
+ \{ananos,sgerag,ialif,nkoziris\}@cslab.ece.ntua.gr
+\end{center}
+
+%\begin{multicols}{2}
+\begin{minipage}{\linewidth}
+%\scalefont{.7}
+\footnotesize
+%\renewcommand{\baselinestretch}{0.8}
+%\renewcommand{\baselineskip}{0.4em}
 The authors would like to thank the members of CSLab for the stimulating
 conversations that led to this work, especially Dr~George Goumas,
 Dr~Konstantinos Nikas and Nikela Papadopoulou. Additionally, many thanks to the
 anonymous reviewers for their useful comments and suggestions.
-\vspace{1em}
+\end{minipage}
+%\end{multicols}
+%\vspace{1em}
 }
 
-\headerbox{WiP}{name=wip,column=2,span=2,above=bottom}{
+\headerbox{Work in Progress}{name=wip,column=0,span=2,above=bottom}{
 %We plan to:
 \begin{itemize}
 \compresslist
-\item Strengthen our implementation to a more user-friendly approach,
-\item Thoroughly examine the CPU utilization overheads imposed by V4VSockets, 
-\item Polish the peer discovery framework to adaptively use V4VSockets over generic sockets. 
+\item[$\Rightarrow$] Strengthen our implementation to a more user-friendly approach,
+\item[$\Rightarrow$] Thoroughly examine the CPU utilization overheads imposed by V4VSockets, 
+\item[$\Rightarrow$] Polish the peer discovery framework to adaptively use V4VSockets over generic sockets. 
+\item[$\Rightarrow$] Perform an elaborate performance evaluation of the GPU sharing framework we have developed
 \end{itemize}
 
 
