@@ -200,7 +200,7 @@ $\Rightarrow$ unnecessary TCP/IP stack crossing and fragmentation
 
 }
 
-\headerbox{I/O Path in Xen with V4VSockets}{name=xenpath,row=0,column=2, span=2}{
+\headerbox{I/O Path in Xen with V4VSockets}{name=v4vpath,row=0,column=2, span=2}{
 %\hspace{0.5em}\scalebox{.96}{
 \begin{center}
 \includegraphics[width=.9\linewidth]{figures/v4vsockets.eps}
@@ -225,7 +225,7 @@ $\Rightarrow$ \emph{Network/Link layer}: the hypervisor, providing encapsulation
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \headerbox{Key features}{name=contribution,column=0,span=1, below=xenpath}{
+  \headerbox{Key features}{name=contribution,column=0,span=2, below=xenpath}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 V4VSockets\footnote{https://github.com/HPSI/v4v}, is an efficient,
 socket-compliant, high performance intra node communication framework.
@@ -262,7 +262,7 @@ $\Rightarrow$ ultra low latency and high-bandwidth.
 %%  }
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \headerbox{Ping-pong benchmark (single pair of VMs and up to 16 VMs)}{name=results,column=1,span=3,below=xenpath}{
+ \headerbox{Ping-pong benchmark}{name=results,column=2,span=2,below=v4vpath}{
 
 %\setlength{\columnsep}{0em}
 %\setlength{\columnseprule}{0.9mm}
@@ -298,8 +298,8 @@ The aggregate throughput achieved by V4VSockets is shown below -- we are able to
 
 }
 
-\headerbox{GPU stencil performance through rCUDA}{name=gpu,column=0,span=4,below=results}{
-\begin{multicols}{3} 
+\headerbox{GPU stencil performance through rCUDA}{name=gpu,column=0,span=2,below=contribution}{
+\begin{multicols}{2} 
 
 %\hspace{0.5em}
 %\scalebox{1.095}{
