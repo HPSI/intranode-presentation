@@ -362,18 +362,18 @@ to their destination, according to V4V semantics,
 %\begin{block}
 {Cases:}
 \begin{itemize}
-\item TCP/UDP sockets
-\item V4V Stream/Datagram 
+\item TCP sockets
+\item V4V Stream
 \end{itemize}
 %\end{block}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Experimental evaluation -- RTT latency}
+\frametitle{Experimental evaluation -- latency}
 \begin{columns}
 \column{.8\textwidth}
-\includegraphics[width=\textwidth]{figures/latencya.eps}
+\includegraphics[width=\textwidth]{figures/v4v_lat.eps}
 \end{columns}
 \end{frame}
 
@@ -381,7 +381,7 @@ to their destination, according to V4V semantics,
 \frametitle{Experimental evaluation -- Bandwidth}
 \begin{columns}
 \column{.8\textwidth}
-\includegraphics[width=\textwidth]{figures/asdf.eps}
+\includegraphics[width=\textwidth]{figures/v4v_bw.eps}
 \end{columns}
 \end{frame}
 
@@ -406,6 +406,22 @@ to their destination, according to V4V semantics,
 \begin{columns}
 \column{.8\textwidth}
 \includegraphics[width=\textwidth]{figures/bw_stream_scale.eps}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Experimental evaluation -- GPU stencil}
+\begin{columns}
+\column{.8\textwidth}
+\includegraphics[width=\textwidth]{figures/total_cublas_time.eps}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Experimental evaluation -- GPU stencil}
+\begin{columns}
+\column{.8\textwidth}
+\includegraphics[width=\textwidth]{figures/matrixA_cublas_throughput.eps}
 \end{columns}
 \end{frame}
 
