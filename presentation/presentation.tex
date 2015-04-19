@@ -32,21 +32,26 @@ WWW: \url{http://cslab.ece.ntua.gr/research/}\\
 
 \newcommand{\ta}{\insertframenumber}
 
-\AtBeginSubsection[]
-{
-  \begin{frame}
-  \frametitle{Overview}
-  \tableofcontents[currentsection,currentsubsection]
-  \end{frame}
-}
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}
+%  \frametitle{Overview}
+%  \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
 \begin{document}
 
 
 \frame{\titlepage}
-\section*{Intro}
+
+  \begin{frame}
+  \frametitle{Overview}
+  \tableofcontents[]%[currentsection,currentsubsection]
+  \end{frame}
+\section*{Introduction}
 
 \begin{frame}
-\frametitle{Intro}
+\frametitle{Introduction}
 \begin{block}{Cloud computing}
 \begin{itemize}
 \item application oriented
@@ -242,81 +247,81 @@ to their destination, according to V4V semantics,
 \end{figure}
 \end{frame}
 
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/sockets6.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/sockets5.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/v4vsockets5.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/sockets4.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-%\begin{columns}
-%\column{.8\textwidth}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/sockets3.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/v4vsockets4.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/v4vsockets3.eps}
-\end{figure}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-%\begin{columns}
-%\column{.8\textwidth}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/sockets2.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/v4vsockets2.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/v4vsockets1.eps}
-\end{figure}
-\end{frame}
-
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/sockets6.eps}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/sockets5.eps}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/v4vsockets5.eps}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/sockets4.eps}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%%\begin{columns}
+%%\column{.8\textwidth}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/sockets3.eps}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/v4vsockets4.eps}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/v4vsockets3.eps}
+%\end{figure}
+%\end{frame}
+%
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%%\begin{columns}
+%%\column{.8\textwidth}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/sockets2.eps}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/v4vsockets2.eps}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/v4vsockets1.eps}
+%\end{figure}
+%\end{frame}
+%
 \begin{frame}
 \frametitle{V4VSockets -- Message Exchange}
 \begin{figure}
@@ -326,27 +331,27 @@ to their destination, according to V4V semantics,
 
 
 
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/sockets1.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets -- Message Exchange}
-\begin{figure}
-\includegraphics[scale=0.30]{figures/sockets.eps}
-\end{figure}
-\end{frame}
-
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/sockets1.eps}
+%\end{figure}
+%\end{frame}
+%
+%\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+%\begin{figure}
+%\includegraphics[scale=0.30]{figures/sockets.eps}
+%\end{figure}
+%\end{frame}
+%
 \subsection{Experimental Evaluation}
 
 \begin{frame}
 \frametitle{Performance Results}
 \begin{block}{Testbed}
 \begin{itemize}
-\item 2x \{Intel Xeon @2.4Ghz\}, Intel 5520, 48GB memory, Generic 10GbE
+\item 2x \{Intel Xeon @2.4Ghz\}, Intel 5520, 48GB memory
 \item Xen 4.5-unstable, Debian GNU/Linux (Linux kernel 3.14.2)
 \item generic micro-benchmark: \texttt{pingpong}
 %\begin{itemize}
@@ -407,6 +412,24 @@ to their destination, according to V4V semantics,
 \column{.8\textwidth}
 \includegraphics[width=\textwidth]{figures/bw_stream_scale.eps}
 \end{columns}
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Experimental evaluation -- GPU stencil}
+\begin{block}{Remote CUDA execution framework (rCUDA)}
+\begin{itemize}
+\item execute remote CUDA calls through TCP sockets
+\item direct assignment (pci-passthrough)
+\item remote calls via TCP sockets and V4VSockets
+\end{itemize}
+\end{block}
+\begin{block}{matrix-matrix product benchmark}
+\begin{itemize}
+\item plot total time of execution
+\item plot transfer time of first input matrix
+\end{itemize}
+\end{block}
 \end{frame}
 
 \begin{frame}
