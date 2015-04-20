@@ -15,7 +15,7 @@ clean:
 	rm -f *log *aux *blg *bbl *dvi presentation*pdf *ps *~ *toc *nav *out *snm
 
 presentation.dvi: presentation.tex 
-	$(LATEX) presentation.tex
+#	$(LATEX) presentation.tex
 	$(LATEX) presentation.tex
 
 presentation.ps: presentation.dvi

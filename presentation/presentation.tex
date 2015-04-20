@@ -42,6 +42,7 @@ WWW: \url{http://cslab.ece.ntua.gr/research/}\\
 \begin{document}
 
 
+
 \frame{\titlepage}
 
   \begin{frame}
@@ -80,15 +81,14 @@ The number of co-located VMs is drastically increasing
 \begin{itemize}
 \item stand-alone (flexibility)
 \item distributed (elasticity)
+\item relatively recent trend: network flows (SDN/NFV)
 \end{itemize}
-When it comes to down to numbers, the need for intra-node communication in small data center increases.
+The need for intra-node communication increases.
 \end{block}
 \pause
-\begin{block}{Contribution}
-
-Design and Implement V4VSockets:
+\begin{block}{Design and implement V4VSockets:}
 \begin{itemize}
-\item efficient message exchange (one order of magnitude)
+\item efficient message exchange (almost one order of magnitude better than generic approaches)
 \item isolation
 \item API compatible (Sockets)
 \end{itemize}
@@ -108,7 +108,7 @@ Design and Implement V4VSockets:
 \end{itemize}
 \begin{figure}
 \center
-\includegraphics{figures/xen_arch.eps}
+\includegraphics[width=.65\linewidth]{figures/paravirt.eps}
 \end{figure}
 \end{frame}
 
@@ -140,7 +140,7 @@ Design and Implement V4VSockets:
 \end{frame}
 
 \begin{frame}
-\frametitle{Xen Ring buffers}
+\frametitle{I/O internals -- Xen Ring buffers}
 \begin{columns}
 \column{\textwidth}
 \includegraphics[width=.6\textwidth,angle=-90]{figures/test.eps}
@@ -165,9 +165,9 @@ Design and Implement V4VSockets:
 \subsection{Intra-node communication in Xen}
 
 \begin{frame}
-\frametitle{Intra-node communication in Xen}
+\frametitle{I/O internals -- intra-node communication in Xen}
 \begin{figure}
-\includegraphics[width=\textwidth]{figures/netfront_netback.eps}
+\includegraphics[width=.9\textwidth]{figures/netfront_netback.eps}
 \end{figure}
 \end{frame}
 
@@ -175,6 +175,13 @@ Design and Implement V4VSockets:
 \section{V4VSockets}
 
 \subsection{Architecture}
+
+\begin{frame}
+\frametitle{V4Vsockets vs Netfront/Netback}
+\begin{figure}
+\includegraphics[width=\textwidth]{figures/paths.eps}
+\end{figure}
+\end{frame}
 
 \begin{frame}
 \frametitle{V4VSockets Architecture}
@@ -185,45 +192,7 @@ Design and Implement V4VSockets:
 \end{frame}
 
 \begin{frame}
-\frametitle{V4VSockets Architecture}
-\begin{block}{Application/Library layer}
-\begin{itemize}
-\item forwards the relevant actions and arguments to the transport layer.
-\end{itemize}
-\end{block}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets Architecture}
-\begin{block}{Transport layer -- V4V kernel driver}
-\begin{itemize}
-\item handles the virtual connection semantics between peer VMs that need to communicate,
-\item is in charge of fragmenting and sending upper-layer packets by issuing hypercalls to the hypervisor (network layer), and
-\item provides a notification mechanism to the VM's user-space for receiving packets, as well as error control.
-\end{itemize}
-\end{block}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets Architecture}
-\begin{block}{Network/Link layer - Hypervisor}
-\begin{itemize} 
-\item encapsulation of upper-layer messages to packets that will be transmitted
-to their destination, according to V4V semantics,
-\item packet delivery.
-\end{itemize}
-\end{block}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4Vsockets vs Netfront/Netback}
-\begin{figure}
-\includegraphics[width=\textwidth]{figures/paths.eps}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{V4VSockets}       
+\frametitle{V4VSockets Internals}
 \begin{block}{Communication mechanisms in V4VSockets}
 \begin{itemize}
 \item system calls 
@@ -239,6 +208,59 @@ to their destination, according to V4V semantics,
 \end{itemize}
 \end{block}
 \end{frame}
+
+
+
+\begin{frame}
+\frametitle{V4VSockets Internals}
+\begin{block}{Application/Library layer -- user--space}
+\begin{itemize}
+\item forwards the relevant actions and arguments to the transport layer.
+\item kernel-level socket implementation for a new address family (\texttt{AF\_V4VSOCK})
+\end{itemize}
+\end{block}
+\begin{block}{Example:}
+\begin{itemize}
+\item \texttt{socket()} $\rightarrow$ \texttt{v4vsockets\_create()}
+\item \texttt{bind(sockaddr)} $\rightarrow$ \texttt{v4vsockets\_ring\_create(dom\_id, port)}
+\item \texttt{sendmsg(msghdr)} $\rightarrow$ \texttt{v4vsockets\_sendmsg(msghdr)}
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{V4VSockets Internals}
+\begin{block}{Transport layer -- V4V frontend driver -- VM kernel}
+\begin{itemize}
+\item handles the virtual connection semantics between peer VMs that need to communicate,
+\item is in charge of fragmenting and sending upper-layer packets by issuing hypercalls to the hypervisor (network layer), and
+\item provides a notification mechanism to the VM's user-space for receiving packets, as well as error control.
+\end{itemize}
+\end{block}
+\begin{block}{Example:}
+\begin{itemize}
+\item \texttt{v4vsockets\_sendmsg(msghdr)} $\rightarrow$ \\\texttt{while(nr\_iovecs) \\    v4v\_send(dom\_id, iovec)}
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{V4VSockets Internals}
+\begin{block}{Network/Link layer -- hypervisor}
+\begin{itemize} 
+\item encapsulation of upper-layer messages to packets that will be transmitted
+to their destination, according to V4V semantics,
+\item packet delivery.
+\end{itemize}
+\end{block}
+
+\begin{block}{Example:}
+\begin{itemize}
+\item \texttt{v4v\_send(dom\_id, iovec)} $\rightarrow$ \\\texttt{dom\_ring = v4v\_resolve(dom\_id); \\memcpy(dom\_ring, iovec\_ptr, iovec\_len)}
+\end{itemize}
+\end{block}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{V4VSockets -- Message Exchange}
@@ -348,7 +370,7 @@ to their destination, according to V4V semantics,
 \subsection{Experimental Evaluation}
 
 \begin{frame}
-\frametitle{Performance Results}
+\frametitle{Experimental Evaluation}
 \begin{block}{Testbed}
 \begin{itemize}
 \item 2x \{Intel Xeon @2.4Ghz\}, Intel 5520, 48GB memory
@@ -370,6 +392,11 @@ to their destination, according to V4V semantics,
 \item TCP sockets
 \item V4V Stream
 \end{itemize}
+{Experiment setup:}
+\begin{itemize}
+\item 2 VMs exchanging messages (latency, throughput)
+\item up to 16 VMs exchanging messages in pairs (latency, throughput)
+\end{itemize}
 %\end{block}
 \end{frame}
 
@@ -383,7 +410,7 @@ to their destination, according to V4V semantics,
 \end{frame}
 
 \begin{frame}
-\frametitle{Experimental evaluation -- Bandwidth}
+\frametitle{Experimental evaluation -- throughput}
 \begin{columns}
 \column{.8\textwidth}
 \includegraphics[width=\textwidth]{figures/v4v_bw.eps}
@@ -399,7 +426,7 @@ to their destination, according to V4V semantics,
 %\end{frame}
 
 \begin{frame}
-\frametitle{Experimental evaluation -- Scaling factor (up to 16 VMs)}
+\frametitle{Experimental evaluation -- latency scaling}
 \begin{columns}
 \column{.8\textwidth}
 \includegraphics[width=\textwidth]{figures/lat_stream_scale.eps}
@@ -407,7 +434,7 @@ to their destination, according to V4V semantics,
 
 \end{frame}
 \begin{frame}
-\frametitle{Experimental evaluation -- Scaling factor (up to 16 VMs)}
+\frametitle{Experimental evaluation -- throughput scaling}
 \begin{columns}
 \column{.8\textwidth}
 \includegraphics[width=\textwidth]{figures/bw_stream_scale.eps}
@@ -419,18 +446,24 @@ to their destination, according to V4V semantics,
 \frametitle{Experimental evaluation -- GPU stencil}
 \begin{block}{Remote CUDA execution framework (rCUDA)}
 \begin{itemize}
+\item A.~J. Pe{\~{n}}a, C.~Rea{\~{n}}o, F.~Silla, R.~Mayo, E.~S.
+  Quintana{-}Ort{\'{\i}}, and J.~Duato.
+\emph{A complete and efficient cuda-sharing solution for {HPC} clusters}.
+\emph{Parallel Computing}, 40\penalty0 (10):\penalty0 574--588, 2014.
 \item execute remote CUDA calls through TCP sockets
-\item direct assignment (pci-passthrough)
+\item direct assignment (PCI passthrough)
 \item remote calls via TCP sockets and V4VSockets
 \end{itemize}
 \end{block}
-\begin{block}{matrix-matrix product benchmark}
+
+\begin{block}{GPU stencil: matrix-matrix product benchmark}
 \begin{itemize}
 \item plot total time of execution
 \item plot transfer time of first input matrix
 \end{itemize}
 \end{block}
 \end{frame}
+
 
 \begin{frame}
 \frametitle{Experimental evaluation -- GPU stencil}
@@ -472,7 +505,7 @@ to their destination, according to V4V semantics,
 \item hypercall overheads (small, negligible if correctly finetuned)
 \item scalability (no privileged guest involved in communication)
 \item isolation (no shared memory)
-\item extensible %(layered design, χωρισμένο σε link layer και protocol layer).
+\item event driven%(layered design, χωρισμένο σε link layer και protocol layer).
 %\item hypervisor-specific transport layer, generic interface
 %πρωτόκολλο διασύνδεσης σχεδιασμένο για εικονικά περιβάλλοντα
 \end{itemize}
@@ -485,10 +518,10 @@ to their destination, according to V4V semantics,
 %\item ένταξη σημασιολογίας δικτύων υψηλής επίδοσης στο μοντέλο διαχωρισμένου οδηγού
 %\item επικοινωνία με πολύ χαμηλό χρόνο απόκρισης και υψηλή ρυθμαπόδοση -- συγκρίσιμα με περιβάλλοντα χωρίς virtualization
 %\item συμβατότητα με πρωτόκολλα ανώτερων στρωμάτων (MPI κλπ.)
-\item cpu utilization overheads
+\item CPU utilization overheads
 \item NUMA and multihierarchical memory architectures
 \item map instead of copy (study the systems behavior of providing a shared memory space between VMs)
-\item Optimize away copies on the data path.
+\item GPU sharing evaluation
 \end{itemize}
 %\begin{block}{Future Plans:}
 %\begin{itemize}
@@ -636,4 +669,111 @@ Available online as open-source \url{https://github.com/HPSI/V4VSockets}
 %\end{columns}
 %\end{frame}
 %
+
+\begin{thebibliography}{14}
+%\providecommand{\natexlab}[1]{#1}
+%\providecommand{\url}[1]{\texttt{#1}}
+%\expandafter\ifx\csname urlstyle\endcsname\relax
+%  \providecommand{\doi}[1]{doi: #1}\else
+%  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+%
+%\bibitem[Barham et~al.(2003)Barham, Dragovic, Fraser, Hand, Harris, Ho,
+%  Neugebauer, Pratt, and Warfield]{barham03sosp}
+%P.~Barham, B.~Dragovic, K.~Fraser, S.~Hand, T.~Harris, A.~Ho, R.~Neugebauer,
+%  I.~A. Pratt, and A.~Warfield.
+%\newblock Xen and the art of virtualization.
+%\newblock In \emph{SOSP '03: Proc. of the 19th ACM symposium on Operating
+%  systems principles}, pages 164--177, New York, NY, USA, 2003. ACM.
+%
+%\bibitem[Huang et~al.(2007)Huang, Koop, Gao, and Panda]{huang07mpivm}
+%W.~Huang, M.~J. Koop, Q.~Gao, and D.~K. Panda.
+%\newblock {Virtual machine aware communication libraries for high performance
+%  computing}.
+%\newblock In \emph{SC '07: Proceedings of the 2007 ACM/IEEE conference on
+%  Supercomputing}, NY, USA, 2007. ACM.
+%\newblock ISBN 978-1-59593-764-3.
+%\newblock \doi{10.1145/1362622.1362635}.
+%
+%\bibitem[Kim et~al.(2008)Kim, Kim, Jung, Shin, and Kim]{kim2008sockets}
+%K.~Kim, C.-Y. Kim, S.-I. Jung, H.-S. Shin, and J.-S. Kim.
+%\newblock Inter-domain socket communications supporting high performance and
+%  full binary compatibility on xen.
+%\newblock In \emph{Proceedings of the Fourth ACM SIGPLAN/SIGOPS International
+%  Conference on Virtual Execution Environments}, VEE '08, pages 11--20, New
+%  York, NY, USA, 2008. ACM.
+%\newblock ISBN 978-1-59593-796-4.
+%\newblock \doi{10.1145/1346256.1346259}.
+%
+%\bibitem[Menon et~al.(2006)Menon, Cox, and Zwaenepoel]{menon06atec}
+%A.~Menon, A.~L. Cox, and W.~Zwaenepoel.
+%\newblock {Optimizing network virtualization in Xen}.
+%\newblock In \emph{ATEC '06: Proceedings of the annual conference on USENIX '06
+%  Annual Technical Conference}, pages 2--2, Berkeley, CA, USA, 2006. USENIX.
+%
+%\bibitem[Nanos et~al.(2010)Nanos, Goumas, and Koziris]{nanos10vhpc}
+%A.~Nanos, G.~Goumas, and N.~Koziris.
+%\newblock Exploring {I/O} virtualization data paths for {MPI} applications in a
+%  cluster of {VMs:} a networking perspective.
+%\newblock In \emph{5th Workshop on Virtualization in High-Performance Cloud
+%  Computing (VHPC '10)}, Ischia - Naples, Italy, 8 2010.
+%
+%\bibitem[NetPIPE - Network Protocol Independent Performance
+%  Evaluator()]{netpipe}
+%NetPIPE - Network Protocol Independent Performance Evaluator.
+%\newblock {\url{http://linux.die.net/man/1/netpipe}}.
+%
+%\bibitem[NVIDIA CUDA samples()]{cudasamples}
+%NVIDIA CUDA samples.
+%\newblock {\url{https://developer.nvidia.com/cuda-downloads}}.
+%
+%\bibitem[Pe{\~{n}}a et~al.(2014)Pe{\~{n}}a, Rea{\~{n}}o, Silla, Mayo,
+%  Quintana{-}Ort{\'{\i}}, and Duato]{rCUDAPena}
+%A.~J. Pe{\~{n}}a, C.~Rea{\~{n}}o, F.~Silla, R.~Mayo, E.~S.
+%  Quintana{-}Ort{\'{\i}}, and J.~Duato.
+%\newblock A complete and efficient cuda-sharing solution for {HPC} clusters.
+%\newblock \emph{Parallel Computing}, 40\penalty0 (10):\penalty0 574--588, 2014.
+%
+%\bibitem[Radhakrishnan and Srinivasan(2008)]{prashanth08mmnet}
+%P.~Radhakrishnan and K.~Srinivasan.
+%\newblock Mmnet: An efficient inter-vm communication mechanism.
+%\newblock In \emph{XenSummit}, 2008.
+%
+%\bibitem[Santos et~al.(2008)Santos, Turner, Janakiraman, and
+%  Pratt]{santos08atc}
+%J.~R. Santos, Y.~Turner, G.~Janakiraman, and I.~Pratt.
+%\newblock {Bridging the gap between software and hardware techniques for I/O
+%  virtualization}.
+%\newblock In \emph{ATC'08: USENIX 2008 Annual Technical Conference on Annual
+%  Technical Conference}, pages 29--42, Berkeley, CA, USA, 2008. USENIX.
+%
+%\bibitem[V4V implementation()]{v4v2013}
+%V4V implementation.
+%\newblock
+%  {\url{http://lists.xen.org/archives/html/xen-devel/2013-05/msg02711.html}}.
+%
+%\bibitem[Wang et~al.(2008)Wang, Wright, and Gopalan]{wang08hpdc}
+%J.~Wang, K.-L. Wright, and K.~Gopalan.
+%\newblock {XenLoop: a transparent high performance inter-vm network loopback}.
+%\newblock In \emph{HPDC '08: Proceedings of the 17th international symposium on
+%  High performance distributed computing}, pages 109--118, NY, USA, 2008. ACM.
+%\newblock ISBN 978-1-59593-997-5.
+%\newblock \doi{10.1145/1383422.1383437}.
+%
+%\bibitem[Youseff et~al.(2006)Youseff, Wolski, Gorda, and
+%  Krintz]{youseff06paravirt}
+%L.~Youseff, R.~Wolski, B.~Gorda, and R.~Krintz.
+%\newblock {Paravirtualization for HPC Systems}.
+%\newblock In \emph{In Proc. Workshop on Xen in High-Performance Cluster and
+%  Grid Computing}, pages 474--486. Springer, 2006.
+%
+%\bibitem[Zhang et~al.(2007)Zhang, McIntosh, Rohatgi, and
+%  Griffin]{zhang07xensocket}
+%X.~Zhang, S.~McIntosh, P.~Rohatgi, and J.~Griffin.
+%\newblock Xensocket: A high-throughput interdomain transport for virtual
+%  machines.
+%\newblock In R.~Cerqueira and R.~Campbell, editors, \emph{Middleware 2007},
+%  Lecture Notes in Computer Science. 2007.
+%
+\end{thebibliography}
+
 \end{document}
