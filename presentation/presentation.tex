@@ -56,7 +56,7 @@ WWW: \url{http://cslab.ece.ntua.gr/research/}\\
 \begin{block}{Cloud computing}
 \begin{itemize}
 \item application oriented
-\item fast, ease-of-use
+\item fast, flexible, and easy-to-use infrastructure
 \end{itemize}
 \end{block}
 \begin{block}{Consolidation}
@@ -82,8 +82,13 @@ The number of co-located VMs is drastically increasing
 \item stand-alone (flexibility)
 \item distributed (elasticity)
 \item relatively recent trend: network flows (SDN/NFV)
+\begin{itemize}
+\item lightweight VMs performing a specific network function
+\item network packets go through these VMs forming a flow.
 \end{itemize}
-The need for intra-node communication increases.
+\end{itemize}
+%The need for intra-node communication increases.
+%As a result, if we can stuff as many lightweight VMs as possible in a single container
 \end{block}
 \pause
 \begin{block}{Design and implement V4VSockets:}
@@ -97,7 +102,7 @@ The need for intra-node communication increases.
 \end{frame}
 
 
-\section{Communication in Virtual Environments}
+\section{Communication in Virtualized Environments}
 
 \subsection{Basic Concepts}
 
@@ -184,7 +189,7 @@ The need for intra-node communication increases.
 \end{frame}
 
 \begin{frame}
-\frametitle{V4VSockets Architecture}
+\frametitle{V4VSockets Protocol Stack}
 \begin{columns}
 \column{.8\textwidth}
 \includegraphics[width=\textwidth]{figures/tcp_ip_vs_v4vsockets.eps}
@@ -227,6 +232,16 @@ The need for intra-node communication increases.
 \end{itemize}
 \end{block}
 \end{frame}
+%\begin{frame}
+
+\begin{frame}
+\frametitle{V4VSockets Internals}
+\begin{figure}
+\includegraphics[scale=0.30]{figures/v4vsockets.eps}
+\end{figure}
+\end{frame}
+
+
 
 \begin{frame}
 \frametitle{V4VSockets Internals}
@@ -239,9 +254,17 @@ The need for intra-node communication increases.
 \end{block}
 \begin{block}{Example:}
 \begin{itemize}
-\item \texttt{v4vsockets\_sendmsg(msghdr)} $\rightarrow$ \\\texttt{while(nr\_iovecs) \\    v4v\_send(dom\_id, iovec)}
+\item \texttt{v4vsockets\_sendmsg(msghdr)} $\rightarrow$ \\\texttt{dom\_id = v4vsockets\_resolve(sockaddr); \\while(nr\_iovecs) \\        v4v\_send(dom\_id, iovec)}
 \end{itemize}
 \end{block}
+\end{frame}
+
+\begin{frame}
+%\frametitle{V4VSockets -- Message Exchange}
+\frametitle{V4VSockets Internals}
+\begin{figure}
+\includegraphics[scale=0.30]{figures/v4vsockets.eps}
+\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -612,168 +635,5 @@ Available online as open-source \url{https://github.com/HPSI/V4VSockets}
 \includegraphics[width=\textwidth]{figures/mix.eps}
 \end{columns}
 \end{frame}
-%
-%\begin{frame}
-%\frametitle{Πειραματική αποτίμηση -- Ποσοστό χρήσης CPU για το VM}
-%\begin{columns}
-%\column{.8\textwidth}
-%\includegraphics[width=\textwidth]{figs/bare/lat_breakdown_domU.eps}
-%\end{columns}
-%\end{frame}
-%
-%\begin{frame}
-%\frametitle{Xen2MX -- I}
-%\begin{columns}
-%\column{.8\textwidth}
-%\includegraphics[width=\textwidth]{figs/bare/xen2mx_step1.pdf}
-%\end{columns}
-%\end{frame}
-%
-%\begin{frame}
-%\frametitle{Xen2MX -- II}
-%\begin{columns}
-%\column{.8\textwidth}
-%\includegraphics[width=\textwidth]{figs/bare/xen2mx_step2.pdf}
-%\end{columns}
-%\end{frame}
-%
-%\begin{frame}
-%\frametitle{Xen2MX -- III}
-%\begin{columns}
-%\column{.8\textwidth}
-%\includegraphics[width=\textwidth]{figs/bare/xen2mx_step3.pdf}
-%\end{columns}
-%\end{frame}
-%
-%\begin{frame}
-%\frametitle{Xen2MX -- IV (Bridged)}
-%\begin{columns}
-%\column{.8\textwidth}
-%\includegraphics[width=\textwidth]{figs/bare/xen2mx_step4.pdf}
-%\end{columns}
-%\end{frame}
-%
-%\begin{frame}
-%\frametitle{Xen2MX -- ΙV (IOV)}
-%\begin{columns}
-%\column{.8\textwidth}
-%\includegraphics[width=\textwidth]{figs/bare/xen2mx_step5.pdf}
-%\end{columns}
-%\end{frame}
-%
-%\begin{frame}
-%\frametitle{Xen2MX -- IV (Xen2MX)}
-%\begin{columns}
-%\column{.8\textwidth}
-%\includegraphics[width=\textwidth]{figs/bare/xen2mx_step6.pdf}
-%\end{columns}
-%\end{frame}
-%
-
-\begin{thebibliography}{14}
-%\providecommand{\natexlab}[1]{#1}
-%\providecommand{\url}[1]{\texttt{#1}}
-%\expandafter\ifx\csname urlstyle\endcsname\relax
-%  \providecommand{\doi}[1]{doi: #1}\else
-%  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
-%
-%\bibitem[Barham et~al.(2003)Barham, Dragovic, Fraser, Hand, Harris, Ho,
-%  Neugebauer, Pratt, and Warfield]{barham03sosp}
-%P.~Barham, B.~Dragovic, K.~Fraser, S.~Hand, T.~Harris, A.~Ho, R.~Neugebauer,
-%  I.~A. Pratt, and A.~Warfield.
-%\newblock Xen and the art of virtualization.
-%\newblock In \emph{SOSP '03: Proc. of the 19th ACM symposium on Operating
-%  systems principles}, pages 164--177, New York, NY, USA, 2003. ACM.
-%
-%\bibitem[Huang et~al.(2007)Huang, Koop, Gao, and Panda]{huang07mpivm}
-%W.~Huang, M.~J. Koop, Q.~Gao, and D.~K. Panda.
-%\newblock {Virtual machine aware communication libraries for high performance
-%  computing}.
-%\newblock In \emph{SC '07: Proceedings of the 2007 ACM/IEEE conference on
-%  Supercomputing}, NY, USA, 2007. ACM.
-%\newblock ISBN 978-1-59593-764-3.
-%\newblock \doi{10.1145/1362622.1362635}.
-%
-%\bibitem[Kim et~al.(2008)Kim, Kim, Jung, Shin, and Kim]{kim2008sockets}
-%K.~Kim, C.-Y. Kim, S.-I. Jung, H.-S. Shin, and J.-S. Kim.
-%\newblock Inter-domain socket communications supporting high performance and
-%  full binary compatibility on xen.
-%\newblock In \emph{Proceedings of the Fourth ACM SIGPLAN/SIGOPS International
-%  Conference on Virtual Execution Environments}, VEE '08, pages 11--20, New
-%  York, NY, USA, 2008. ACM.
-%\newblock ISBN 978-1-59593-796-4.
-%\newblock \doi{10.1145/1346256.1346259}.
-%
-%\bibitem[Menon et~al.(2006)Menon, Cox, and Zwaenepoel]{menon06atec}
-%A.~Menon, A.~L. Cox, and W.~Zwaenepoel.
-%\newblock {Optimizing network virtualization in Xen}.
-%\newblock In \emph{ATEC '06: Proceedings of the annual conference on USENIX '06
-%  Annual Technical Conference}, pages 2--2, Berkeley, CA, USA, 2006. USENIX.
-%
-%\bibitem[Nanos et~al.(2010)Nanos, Goumas, and Koziris]{nanos10vhpc}
-%A.~Nanos, G.~Goumas, and N.~Koziris.
-%\newblock Exploring {I/O} virtualization data paths for {MPI} applications in a
-%  cluster of {VMs:} a networking perspective.
-%\newblock In \emph{5th Workshop on Virtualization in High-Performance Cloud
-%  Computing (VHPC '10)}, Ischia - Naples, Italy, 8 2010.
-%
-%\bibitem[NetPIPE - Network Protocol Independent Performance
-%  Evaluator()]{netpipe}
-%NetPIPE - Network Protocol Independent Performance Evaluator.
-%\newblock {\url{http://linux.die.net/man/1/netpipe}}.
-%
-%\bibitem[NVIDIA CUDA samples()]{cudasamples}
-%NVIDIA CUDA samples.
-%\newblock {\url{https://developer.nvidia.com/cuda-downloads}}.
-%
-%\bibitem[Pe{\~{n}}a et~al.(2014)Pe{\~{n}}a, Rea{\~{n}}o, Silla, Mayo,
-%  Quintana{-}Ort{\'{\i}}, and Duato]{rCUDAPena}
-%A.~J. Pe{\~{n}}a, C.~Rea{\~{n}}o, F.~Silla, R.~Mayo, E.~S.
-%  Quintana{-}Ort{\'{\i}}, and J.~Duato.
-%\newblock A complete and efficient cuda-sharing solution for {HPC} clusters.
-%\newblock \emph{Parallel Computing}, 40\penalty0 (10):\penalty0 574--588, 2014.
-%
-%\bibitem[Radhakrishnan and Srinivasan(2008)]{prashanth08mmnet}
-%P.~Radhakrishnan and K.~Srinivasan.
-%\newblock Mmnet: An efficient inter-vm communication mechanism.
-%\newblock In \emph{XenSummit}, 2008.
-%
-%\bibitem[Santos et~al.(2008)Santos, Turner, Janakiraman, and
-%  Pratt]{santos08atc}
-%J.~R. Santos, Y.~Turner, G.~Janakiraman, and I.~Pratt.
-%\newblock {Bridging the gap between software and hardware techniques for I/O
-%  virtualization}.
-%\newblock In \emph{ATC'08: USENIX 2008 Annual Technical Conference on Annual
-%  Technical Conference}, pages 29--42, Berkeley, CA, USA, 2008. USENIX.
-%
-%\bibitem[V4V implementation()]{v4v2013}
-%V4V implementation.
-%\newblock
-%  {\url{http://lists.xen.org/archives/html/xen-devel/2013-05/msg02711.html}}.
-%
-%\bibitem[Wang et~al.(2008)Wang, Wright, and Gopalan]{wang08hpdc}
-%J.~Wang, K.-L. Wright, and K.~Gopalan.
-%\newblock {XenLoop: a transparent high performance inter-vm network loopback}.
-%\newblock In \emph{HPDC '08: Proceedings of the 17th international symposium on
-%  High performance distributed computing}, pages 109--118, NY, USA, 2008. ACM.
-%\newblock ISBN 978-1-59593-997-5.
-%\newblock \doi{10.1145/1383422.1383437}.
-%
-%\bibitem[Youseff et~al.(2006)Youseff, Wolski, Gorda, and
-%  Krintz]{youseff06paravirt}
-%L.~Youseff, R.~Wolski, B.~Gorda, and R.~Krintz.
-%\newblock {Paravirtualization for HPC Systems}.
-%\newblock In \emph{In Proc. Workshop on Xen in High-Performance Cluster and
-%  Grid Computing}, pages 474--486. Springer, 2006.
-%
-%\bibitem[Zhang et~al.(2007)Zhang, McIntosh, Rohatgi, and
-%  Griffin]{zhang07xensocket}
-%X.~Zhang, S.~McIntosh, P.~Rohatgi, and J.~Griffin.
-%\newblock Xensocket: A high-throughput interdomain transport for virtual
-%  machines.
-%\newblock In R.~Cerqueira and R.~Campbell, editors, \emph{Middleware 2007},
-%  Lecture Notes in Computer Science. 2007.
-%
-\end{thebibliography}
 
 \end{document}
